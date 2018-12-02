@@ -1,8 +1,10 @@
 from overdueAlert import play_alert
 from getDueDates import *
-from datetime import datetime
+from datetime import datetime, timedelta
 from time import sleep
 import json
+
+utc_offset = 5
 
 with open('./bugme/tokens.json') as json_file:
     data = json.load(json_file)
@@ -15,7 +17,7 @@ def trigger():
     """
     with open('./bugme/converted_dates.txt') as date_file:
         for date in date_file:
-            if str(datetime.now()) > (date):
+            if str(datetime.now()+timedelta(hours=utc_offset)) > (date):
                 play_alert('./bugme/alert.mp3')
                 break
 
@@ -31,6 +33,6 @@ def watch():
         get_due_dates(myKey)
         convert_dates()
         trigger()
-        sleep(600) # Sleep for 10 minutes
+        sleep(60) # Sleep for (1) minutes
 
 watch()
