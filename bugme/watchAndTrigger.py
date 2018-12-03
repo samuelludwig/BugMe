@@ -33,6 +33,6 @@ def watch():
         get_due_dates(myKey)
         convert_dates()
         trigger()
-        sleep(60) # Sleep for (1) minutes
+        sleep(600) # Sleep for (10) minutes
 
 watch()
