@@ -45,46 +45,52 @@ token_change_frame = tkinter.Frame(window)
 
 
 # [Label] Changes will take effect the next time BugMe is turned ON
-changes_label = tkinter.Label(window, text="Changes will take effect the next time BugMe is turned on")
+changes_label = tkinter.Label(change_note_frame, text="Changes will take effect the next time BugMe is turned on")
 
 # [Button] ON
-on_button = tkinter.Button(window, text="ON", width=4, command=turn_on)
+on_button = tkinter.Button(on_off_frame, text="ON", width=4, command=turn_on)
 
 # [Button] OFF
-off_button = tkinter.Button(window, text="ON", width=4, command=turn_off)
+off_button = tkinter.Button(on_off_frame, text="ON", width=4, command=turn_off)
 
 # [Label] Check and Alert Me Every...
-frequency_label_1 = tkinter.Label(window, text="Check and alert me every")
+frequency_label_1 = tkinter.Label(frequency_frame, text="Check and alert me every")
 
 # [TextEntry] Alert Frequency Setting (>= 1 minute)
-frequency_input = tkinter.Entry(window)
+frequency_input = tkinter.Entry(frequency_frame)
 
 # [Label] ...minute(s)
-frequency_label_2 = tkinter.Label(window, text="minutes")
+frequency_label_2 = tkinter.Label(frequency_frame, text="minutes")
 
 # [Label] Change UTC Offset
-offset_label = tkinter.Label(window, text="Change UTC Offset")
+offset_label = tkinter.Label(utc_frame, text="Change UTC Offset")
 
 # [ListBox] POS/NEG Indicator
-offset_sign = tkinter.Listbox(window)
+offset_sign = tkinter.Listbox(utc_frame, selectmode="browse", width=3, height=2)
+offset_sign.insert(0, "+", "-")
 
 # [TextEntry] Time Offset in HH:MM Format
-offset_amount = tkinter.Entry(window)
+offset_amount = tkinter.Entry(utc_frame, width=10)
 
 # [Label] Change Alert Sound
-change_alert_label = tkinter.Label(window)
+change_alert_label = tkinter.Label(change_alert_frame)
 
 # [TextEntry] Change Alert Audio (URI)
-alert_uri = tkinter.Entry(window)
+alert_uri = tkinter.Entry(change_alert_frame)
 
 # [Button] Browse for Soundfile on System
-alert_browse = tkinter.Button(window, text="Browse")
+alert_browse = tkinter.Button(change_alert_frame, text="Browse")
 
 # [Label] Change User Token
-change_token_label = tkinter.Label(window, text="Change user token:")
+change_token_label = tkinter.Label(token_change_frame, text="Change user token:")
 
 # [TextEntry] User Token
-token_input = tkinter.Entry(window)
+token_input = tkinter.Entry(token_change_frame)
+
+utc_frame.grid(row=0, column=0)
+offset_label.grid(row=0, column=0, sticky='w')
+offset_sign.grid(row=1, column=0, sticky='w')
+offset_amount.grid(row=1, column=1, sticky='w')
 
 
 window.mainloop()
