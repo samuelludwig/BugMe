@@ -35,4 +35,3 @@ def watch():
         trigger()
         sleep(600) # Sleep for (10) minutes
 
-watch()
