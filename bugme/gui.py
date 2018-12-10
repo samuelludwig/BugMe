@@ -1,11 +1,17 @@
 import tkinter
+from watchAndTrigger import watch
 window = tkinter.Tk()
 
 def turn_on():
-    pass
+    token_input.get()
+    offset_sign.get()
+    offset_amount.get()
+    frequency_input.get()
+    alert_uri.get()
+    watch()
 
 def turn_off():
-    pass
+    SystemExit()
 
 # [Title] Window Title
 window.title("BugMe Control Panel")
@@ -86,6 +92,7 @@ change_token_label = tkinter.Label(token_change_frame, text="Change user token:"
 
 # [TextEntry] User Token
 token_input = tkinter.Entry(token_change_frame, width=24)
+
 
 utc_frame.grid(row=0, column=0, padx=16, pady=16, sticky='nsew')
 offset_label.grid(row=0, column=0, columnspan=2, sticky='nsew')
