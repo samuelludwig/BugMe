@@ -1,10 +1,10 @@
 import tkinter
-from watchAndTrigger import watch
+from watchAndTrigger import *
 window = tkinter.Tk()
 
 def turn_on():
     token_input.get()
-    offset_sign.get()
+    offset_sign.curselection()
     offset_amount.get()
     frequency_input.get()
     alert_uri.get()
@@ -91,7 +91,7 @@ alert_browse = tkinter.Button(change_alert_frame, width=8, text="Browse")
 change_token_label = tkinter.Label(token_change_frame, text="Change user token:")
 
 # [TextEntry] User Token
-token_input = tkinter.Entry(token_change_frame, width=24)
+token_input = tkinter.Entry(token_change_frame, width=48, show="*")
 
 
 utc_frame.grid(row=0, column=0, padx=16, pady=16, sticky='nsew')

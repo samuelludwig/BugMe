@@ -11,8 +11,8 @@ from gui import *
 - The UTC offset amount [o]
 - The User Token [o]
 - Remind Frequency [o]
+- sound file uri [o]
 """
-
 
 utc_offset = offset_amount.get() # from gui
 utc_sign = offset_sign.get() # from gui
@@ -30,11 +30,11 @@ def trigger(utc_offset, utc_sign):
         for date in date_file:
             if utc_sign == '-': 
                 if str(datetime.now()+timedelta(hours=utc_offset[0:2], minutes=utc_offset[3:5])) > (date):
-                    play_alert('./bugme/alert.mp3')
+                    play_alert(alert_uri.get())
                     break
             elif utc_sign == '+':
                 if str(datetime.now()-timedelta(hours=utc_offset[0:2], minutes=utc_offset[3:5])) > (date):
-                    play_alert('./bugme/alert.mp3')
+                    play_alert(alert_uri.get())
                     break
 
 
