@@ -1,11 +1,6 @@
 import datetime
 import json
 from todoist.api import TodoistAPI
-from gui import *
-with open('./bugme/tokens.json') as json_file:
-    data = json.load(json_file)
-    myKey = data['myAPIkey']
-
 
 def get_due_dates(apiKey):
     """Isolates due dates/times of all todoist tasks and writes them to a file (base_dates.txt)."""
@@ -35,7 +30,7 @@ def convert_month(month):
         'Oct': '10',
         'Nov': '11',
         'Dec': '12',
-        '': 'xx'
+        '': 'xx'    # A default that shouldn't be reached
     }[month]
 
 
@@ -58,6 +53,3 @@ def convert_dates():
 
                 con_file.write(con_time)
     pass
-
-get_due_dates(token_input.get())
-convert_dates()

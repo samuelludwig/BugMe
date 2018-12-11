@@ -2,26 +2,8 @@ from overdueAlert import play_alert
 from getDueDates import *
 from datetime import datetime, timedelta
 from time import sleep
-import json
-from gui import *
 
-"""What I need from GUI
-
-- The UTC offset sign [o]
-- The UTC offset amount [o]
-- The User Token [o]
-- Remind Frequency [o]
-- sound file uri [o]
-"""
-
-utc_offset = offset_amount.get() # from gui
-utc_sign = offset_sign.get() # from gui
-
-with open('./bugme/tokens.json') as json_file:
-    data = json.load(json_file)
-    myKey = data['myAPIkey']
-
-def trigger(utc_offset, utc_sign):
+def trigger(utc_offset, utc_sign, alert_sound):
     """Goes through list of converted dates and compares them to current time to see if they have passed.
     
     Will be called after getDueDates's functions periodically as app is open to check to see if anything is overdue.
@@ -30,15 +12,15 @@ def trigger(utc_offset, utc_sign):
         for date in date_file:
             if utc_sign == '-': 
                 if str(datetime.now()+timedelta(hours=utc_offset[0:2], minutes=utc_offset[3:5])) > (date):
-                    play_alert(alert_uri.get())
+                    play_alert(alert_sound)
                     break
             elif utc_sign == '+':
                 if str(datetime.now()-timedelta(hours=utc_offset[0:2], minutes=utc_offset[3:5])) > (date):
-                    play_alert(alert_uri.get())
+                    play_alert(alert_sound)
                     break
 
 
-def watch():
+def watch(is_on, token, frequency, utc_offset, utc_sign, alert_sound):
     """Where it all happens, calls all relevant functions to check and respond to due status
 
     Goes through the process of getting and converting the due dates of each task,
@@ -46,9 +28,8 @@ def watch():
     the play_alert() function. Runs as long as app is up, will update and check
     tasks every ten minutes.
     """
-    while True:
-        get_due_dates(token_input.get())
+    while is_on:
+        get_due_dates(token)
         convert_dates()
-        trigger()
-        sleep(frequency_input.get() * 60) # Sleep for (10) minutes
-
+        trigger(utc_offset, utc_sign, alert_sound)
+        sleep(int(frequency) * 60) # Sleep for (frequency) minutes

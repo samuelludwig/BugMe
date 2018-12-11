@@ -1,17 +1,16 @@
 import tkinter
-from watchAndTrigger import *
+from watchAndTrigger import watch
+from getDueDates import *
 window = tkinter.Tk()
 
+is_on = True
+
 def turn_on():
-    token_input.get()
-    offset_sign.curselection()
-    offset_amount.get()
-    frequency_input.get()
-    alert_uri.get()
-    watch()
+    is_on = True
+    watch(is_on, token_input.get(), frequency_input.get(), offset_amount.get(), offset_sign.curselection(), alert_uri.get())
 
 def turn_off():
-    SystemExit()
+    is_on = False
 
 # [Title] Window Title
 window.title("BugMe Control Panel")
