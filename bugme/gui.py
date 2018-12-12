@@ -1,16 +1,28 @@
 import tkinter
 from watchAndTrigger import watch
 from getDueDates import *
+import threading
 window = tkinter.Tk()
 
-is_on = True
+def watchThread(i):
+    try:
+        watch(token_input.get(), frequency_input.get(), offset_amount.get(), offset_sign.curselection(), alert_uri.get())
+    except:
+        print("calling watch failed")
+
+watchMe = threading.Thread(target=watchThread, args=(0,))
 
 def turn_on():
-    is_on = True
-    watch(is_on, token_input.get(), frequency_input.get(), offset_amount.get(), offset_sign.curselection(), alert_uri.get())
+    try:
+        watchMe.start()
+    except:
+        print("Oh dear, something's gone terribly wrong...")
 
 def turn_off():
-    is_on = False
+    try:
+        watchMe._stop()
+    except:
+        print("Well, it seems the worlds ended...")
 
 # [Title] Window Title
 window.title("BugMe Control Panel")

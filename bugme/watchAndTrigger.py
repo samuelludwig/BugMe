@@ -11,16 +11,16 @@ def trigger(utc_offset, utc_sign, alert_sound):
     with open('./bugme/converted_dates.txt') as date_file:
         for date in date_file:
             if utc_sign == '-': 
-                if str(datetime.now()+timedelta(hours=utc_offset[0:2], minutes=utc_offset[3:5])) > (date):
+                if str(datetime.now()+timedelta(hours=int(utc_offset[0:2]), minutes=int(utc_offset[3:5]))) > (date):
                     play_alert(alert_sound)
                     break
             elif utc_sign == '+':
-                if str(datetime.now()-timedelta(hours=utc_offset[0:2], minutes=utc_offset[3:5])) > (date):
+                if str(datetime.now()-timedelta(hours=int(utc_offset[0:2]), minutes=int(utc_offset[3:5]))) > (date):
                     play_alert(alert_sound)
                     break
 
 
-def watch(is_on, token, frequency, utc_offset, utc_sign, alert_sound):
+def watch(token, frequency, utc_offset, utc_sign, alert_sound):
     """Where it all happens, calls all relevant functions to check and respond to due status
 
     Goes through the process of getting and converting the due dates of each task,
@@ -28,8 +28,10 @@ def watch(is_on, token, frequency, utc_offset, utc_sign, alert_sound):
     the play_alert() function. Runs as long as app is up, will update and check
     tasks every ten minutes.
     """
-    while is_on:
+    while True:
         get_due_dates(token)
         convert_dates()
         trigger(utc_offset, utc_sign, alert_sound)
         sleep(int(frequency) * 60) # Sleep for (frequency) minutes
+
+# watch("xxxxxxxxxxxxxxxxxxxxxxxxxxx", "1", "05:00", "-", "./bugme/alert.mp3")
