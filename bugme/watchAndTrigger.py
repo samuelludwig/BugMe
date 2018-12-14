@@ -28,10 +28,9 @@ def watch(token, frequency, utc_offset, utc_sign, alert_sound):
     the play_alert() function. Runs as long as app is up, will update and check
     tasks every ten minutes.
     """
-    while True:
-        get_due_dates(token)
-        convert_dates()
-        trigger(utc_offset, utc_sign, alert_sound)
-        sleep(int(frequency) * 60) # Sleep for (frequency) minutes
+    get_due_dates(token)
+    convert_dates()
+    trigger(utc_offset, utc_sign, alert_sound)
+    sleep(int(frequency) * 60) # Sleep for (frequency) minutes
 
-# watch("xxxxxxxxxxxxxxxxxxxxxxxxxxx", "1", "05:00", "-", "./bugme/alert.mp3")
+# watch("xxxxxxxxxxxxxxxxxxxxxxxxxxx", "1", "05:00", "-", "./bugme/alert.mp3") <- test method of watch()
