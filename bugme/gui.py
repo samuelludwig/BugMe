@@ -21,9 +21,8 @@ watchMe = threading.Thread(target=watchThread, args=(0,))
 def turn_on():
     is_on = True
     try:
-        while is_on:
-            watchMe.start()
-            watchMe.join()
+        watchMe.start()
+        watchMe.join()
     except:
         print("Oh dear, something's gone terribly wrong...")
 
