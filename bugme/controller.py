@@ -4,9 +4,16 @@ import threading
 
 is_on = False
 
-##############################################################################################
-# TODO: Find a way to call watch repeatedly, which also stops when the off button is pressed #
-##############################################################################################
+#################################################################################################
+# TODO: Find a way to call watch repeatedly, which also stops when the off button is pressed    #
+#################################################################################################
+# Based on a stack overflow question:                                                           #
+# https://stackoverflow.com/questions/45648082/get-argument-of-tkinter-instance-in-other-module #
+# - Might have my import flow backwards, should have controller calling GUI and not the other   #
+#   way around.                                                                                 #
+# - Should call the input-ed fields in turn_on function defined here in controller              #
+# - Will need to do some refactoring work but seems promising                                   # 
+#################################################################################################
 
 def watchThread(token, frequency, offset, offset_sign, alert_uri):
     try:
