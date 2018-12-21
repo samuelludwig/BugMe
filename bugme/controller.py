@@ -1,5 +1,6 @@
 from watchAndTrigger import watch
 from getDueDates import *
+import gui
 import threading
 
 is_on = False
@@ -23,11 +24,11 @@ def watchThread(token, frequency, offset, offset_sign, alert_uri):
     except:
         print("calling watch failed")
 
-def turn_on(token, frequency, offset, offset_sign, alert_uri):
+def turn_on():
     global is_on
     is_on = True
     try:
-        watchMe = threading.Thread(target=watchThread, args=(token, frequency, offset, offset_sign, alert_uri))
+        watchMe = threading.Thread(target=watchThread, args=(gui.token_input.get(), gui.frequency_input.get(), gui.offset_amount.get(), gui.offset_sign.get(), gui.alert_uri.get()))
         watchMe.start()
     except:
         print("Oh dear, something's gone terribly wrong...")
