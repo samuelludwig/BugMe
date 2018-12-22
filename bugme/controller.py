@@ -7,6 +7,7 @@ is_on = False
 
 #################################################################################################
 # TODO: Find a way to call watch repeatedly, which also stops when the off button is pressed    #
+# TODO: Figure out this unresolved imports nonsense                                             #
 #################################################################################################
 # Based on a stack overflow question:                                                           #
 # https://stackoverflow.com/questions/45648082/get-argument-of-tkinter-instance-in-other-module #
