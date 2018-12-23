@@ -1,6 +1,15 @@
 import tkinter
-import controller
 window = tkinter.Tk()
+
+def turn_on(self):
+    self.token = token_input.get()
+    self.frequency = frequency_input.get()
+    self.offset = offset_amount.get()
+    self.sign = offset_sign.curselection()
+    self.uri = alert_uri.get()
+
+def turn_off(self):
+    pass
 
 # [Title] Window Title
 window.title("BugMe Control Panel")
@@ -42,10 +51,10 @@ token_change_frame = tkinter.Frame(window)
 changes_label = tkinter.Label(change_note_frame, text="Changes will take effect the next time BugMe is turned on")
 
 # [Button] ON
-on_button = tkinter.Button(on_off_frame, text="ON", width=16, height=6,command=controller.turn_on)
+on_button = tkinter.Button(on_off_frame, text="ON", width=16, height=6,command=turn_on)
 
 # [Button] OFF
-off_button = tkinter.Button(on_off_frame, text="OFF", width=16, height=6, command=controller.turn_off)
+off_button = tkinter.Button(on_off_frame, text="OFF", width=16, height=6, command=turn_off)
 
 # [Label] Check and Alert Me Every...
 frequency_label_1 = tkinter.Label(frequency_frame, text="Check and alert me every")
