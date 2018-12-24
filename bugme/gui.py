@@ -1,14 +1,16 @@
 import tkinter
+from controller import *
 window = tkinter.Tk()
 
-def turn_on(self):
-    self.token = token_input.get()
-    self.frequency = frequency_input.get()
-    self.offset = offset_amount.get()
-    self.sign = offset_sign.curselection()
-    self.uri = alert_uri.get()
+def turn_on():
+    token = token_input.get()
+    frequency = frequency_input.get()
+    offset = offset_amount.get()
+    sign = offset_sign.curselection()
+    uri = alert_uri.get()
+    controller.watch(token, frequency, offset, sign, uri)
 
-def turn_off(self):
+def turn_off():
     pass
 
 # [Title] Window Title
