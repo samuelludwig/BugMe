@@ -10,6 +10,8 @@ from time import sleep
 #                                                                                               # 
 #################################################################################################
 
+class controller: pass
+
 def trigger(utc_offset, utc_sign, alert_sound):
     """Goes through list of converted dates and compares them to current time to see if they have passed.
     
