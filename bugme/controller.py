@@ -10,7 +10,7 @@ from time import sleep
 #                                                                                               # 
 #################################################################################################
 
-class controller: pass
+class Controller: pass
 
 def trigger(utc_offset, utc_sign, alert_sound):
     """Goes through list of converted dates and compares them to current time to see if they have passed.
@@ -41,5 +41,7 @@ def watch(token, frequency, utc_offset, utc_sign, alert_sound):
     convert_dates()
     trigger(utc_offset, utc_sign, alert_sound)
     sleep(int(frequency) * 60) # Sleep for (frequency) minutes
+
+# watch("xxxxxxxxxxxxxxxxxxxxxxxxxxx", "1", "05:00", "-", "./bugme/alert.mp3") <- test method of watch()
 
 
