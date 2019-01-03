@@ -9,38 +9,43 @@ from time import sleep
 #################################################################################################
 #                                                                                               # 
 #################################################################################################
+class Controller:
+    def __init__(self, token, frequency, utc_offset, utc_sign, alert_uri):
+        self.token = token
+        self.frequency = frequency
+        self.utc_offset = utc_offset
+        self.utc_sign = utc_sign
+        self.alert_uri = alert_uri
 
-class Controller: pass
-
-def trigger(utc_offset, utc_sign, alert_sound):
-    """Goes through list of converted dates and compares them to current time to see if they have passed.
-    
-    Will be called after getDueDates's functions periodically as app is open to check to see if anything is overdue.
-    """
-    with open('./bugme/converted_dates.txt') as date_file:
-        for date in date_file:
-            if utc_sign == '-': 
-                if str(datetime.now()+timedelta(hours=int(utc_offset[0:2]), minutes=int(utc_offset[3:5]))) > (date):
-                    play_alert(alert_sound)
-                    break
-            elif utc_sign == '+':
-                if str(datetime.now()-timedelta(hours=int(utc_offset[0:2]), minutes=int(utc_offset[3:5]))) > (date):
-                    play_alert(alert_sound)
-                    break
+    def trigger(utc_offset, utc_sign, alert_uri):
+        """Goes through list of converted dates and compares them to current time to see if they have passed.
+        
+        Will be called after getDueDates's functions periodically as app is open to check to see if anything is overdue.
+        """
+        with open('./bugme/converted_dates.txt') as date_file:
+            for date in date_file:
+                if utc_sign == '-': 
+                    if str(datetime.now()+timedelta(hours=int(utc_offset[0:2]), minutes=int(utc_offset[3:5]))) > (date):
+                        play_alert(alert_uri)
+                        break
+                elif utc_sign == '+':
+                    if str(datetime.now()-timedelta(hours=int(utc_offset[0:2]), minutes=int(utc_offset[3:5]))) > (date):
+                        play_alert(alert_uri)
+                        break
 
 
-def watch(token, frequency, utc_offset, utc_sign, alert_sound):
-    """Where it all happens, calls all relevant functions to check and respond to due status
+    def watch(token, frequency, utc_offset, utc_sign, alert_uri):
+        """Where it all happens, calls all relevant functions to check and respond to due status
 
-    Goes through the process of getting and converting the due dates of each task,
-    then testing them to see if they are past due. If they are past due trigger() will call
-    the play_alert() function. Runs as long as app is up, will update and check
-    tasks every ten minutes.
-    """
-    get_due_dates(token)
-    convert_dates()
-    trigger(utc_offset, utc_sign, alert_sound)
-    sleep(int(frequency) * 60) # Sleep for (frequency) minutes
+        Goes through the process of getting and converting the due dates of each task,
+        then testing them to see if they are past due. If they are past due trigger() will call
+        the play_alert() function. Runs as long as app is up, will update and check
+        tasks every ten minutes.
+        """
+        get_due_dates(token)
+        convert_dates()
+        trigger(utc_offset, utc_sign, alert_sound)
+        sleep(int(frequency) * 60) # Sleep for (frequency) minutes
 
 # watch("xxxxxxxxxxxxxxxxxxxxxxxxxxx", "1", "05:00", "-", "./bugme/alert.mp3") <- test method of watch()
 
