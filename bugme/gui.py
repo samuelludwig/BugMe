@@ -1,5 +1,5 @@
 import tkinter
-from controller import *
+import controller
 window = tkinter.Tk()
 
 def turn_on():
@@ -8,8 +8,8 @@ def turn_on():
     offset = offset_amount.get()
     sign = offset_sign.curselection()
     uri = alert_uri.get()
-    profile = Controller(token, frequency, offset, sign, uri)
-    controller.watch(token, frequency, offset, sign, uri)
+    profile = controller.Controller(token, frequency, offset, sign, uri)
+    profile.watch(token, frequency, offset, sign, uri)
 
 def turn_off():
     pass
