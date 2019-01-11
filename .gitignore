@@ -118,3 +118,4 @@ dmypy.json
 .vscode
 tokens.json
 viewTasks.py
+user_data.json
