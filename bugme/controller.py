@@ -1,5 +1,5 @@
-import overdueAlert
-import getDueDates
+from bugme import overdueAlert
+from bugme import getDueDates
 from datetime import datetime, timedelta
 from time import sleep
 
@@ -9,18 +9,18 @@ from time import sleep
 #                                                                                               # 
 #################################################################################################
 
-def turn_on():
-    token = token_input.get()
-    frequency = frequency_input.get()
-    offset = offset_amount.get()
-    sign = offset_sign.curselection()
-    uri = alert_uri.get()
-    profile = controller.Controller(token, frequency, offset, sign, uri)
-    profile.watch(token, frequency, offset, sign, uri)
+# def turn_on():
+#     token = token_input.get()
+#     frequency = frequency_input.get()
+#     offset = offset_amount.get()
+#     sign = offset_sign.curselection()
+#     uri = alert_uri.get()
+#     profile = controller.Controller(token, frequency, offset, sign, uri)
+#     profile.watch(token, frequency, offset, sign, uri)
 
-def turn_off():
-    pass
-    
+# def turn_off():
+#     pass
+
 class Controller:
     def __init__(self, token, frequency, utc_offset, utc_sign, alert_uri):
         self.token = token
