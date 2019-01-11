@@ -2,18 +2,6 @@ import tkinter
 import controller
 window = tkinter.Tk()
 
-def turn_on():
-    token = token_input.get()
-    frequency = frequency_input.get()
-    offset = offset_amount.get()
-    sign = offset_sign.curselection()
-    uri = alert_uri.get()
-    profile = controller.Controller(token, frequency, offset, sign, uri)
-    profile.watch(token, frequency, offset, sign, uri)
-
-def turn_off():
-    pass
-
 # [Title] Window Title
 window.title("BugMe Control Panel")
 
