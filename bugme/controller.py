@@ -1,13 +1,13 @@
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-from bugme import overdueAlert
-from bugme import getDueDates
-from bugme import gui
-from datetime import datetime, timedelta
 from time import sleep
-import tkinter
+
 import json
+import tkinter
+from bugme import getDueDates, gui, overdueAlert
+from datetime import datetime, timedelta
+
 
 #################################################################################################
 # TODO: Find a way to call watch repeatedly, which also stops when the off button is pressed    #
@@ -170,6 +170,31 @@ def watch(token, frequency, utc_offset, utc_sign, alert_uri):
     trigger(utc_offset, utc_sign, alert_uri)
     sleep(int(frequency) * 60) # Sleep for (frequency) minutes
 
+def fill_fields():
+    """Takes data (if present) from user_data.json and fills it into view fields on app open
+    
+    Arguments:
+        token {string} -- api key for user
+        frequency {int} -- frequency of alerts/checks
+        utc_offset {string} -- utc offset amount in HH:MM format
+        utc_sign {char} -- sign of utc offset (+ or -)
+        alert_uri {string} -- path to audio file to play alert
+    """
+    with open("./bugme/user_data.json", "r") as data_file:
+        data = json.load(data_file)
+        token_input.insert(0, data["user_info[\"token\"]"])
+        frequency_input.insert(0, data["user_info[\"frequency\"]"])
+        offset_amount.insert(0, data["user_info[\"offset_amount\"]"])
+        
+        if(data["user_info[\"offset_sign\"]"] == '-'):
+            offset_sign.activate(0)
+        else:
+            offset_sign.activate(1)
+
+        alert_uri.insert(0, data["user_info[\"alert_uri\"]"])
+
+
+
 def grab_user_data(token, frequency, utc_offset, utc_sign, alert_uri):
     """Tosses entered user data into a JSON file (user_data.json)
     
@@ -198,6 +223,7 @@ def start():
     
     (if there is anything in that file)
     """
+    fill_fields()
     pass
 
 
