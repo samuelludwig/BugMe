@@ -5,7 +5,7 @@ from time import sleep
 
 import json
 import tkinter
-from bugme import getDueDates, gui, overdueAlert
+from bugme import getDueDates, overdueAlert
 from datetime import datetime, timedelta
 
 
@@ -95,33 +95,6 @@ change_token_label = tkinter.Label(token_change_frame, text="Change user token:"
 # [TextEntry] User Token
 token_input = tkinter.Entry(token_change_frame, width=48, show="*")
 
-
-utc_frame.grid(row=0, column=0, padx=16, pady=16, sticky='nsew')
-offset_label.grid(row=0, column=0, columnspan=2, sticky='nsew')
-offset_sign.grid(row=1, column=0, sticky='nsew')
-offset_amount.grid(row=1, column=1, sticky='nsew')
-
-frequency_frame.grid(row=0, column=2, padx=16, pady=16, sticky='e')
-frequency_label_1.grid(row=0, column=0, sticky='nsew')
-frequency_input.grid(row=1, column=0, sticky='nsew')
-frequency_label_2.grid(row=1, column=1, sticky='nsew')
-
-change_alert_frame.grid(row=1, column=2, padx=16, pady=16, sticky='nsew')
-change_alert_label.grid(row=0, column=0, columnspan=2, sticky='nsew')
-alert_uri.grid(row=1, column=0, sticky='nsew')
-alert_browse.grid(row=1, column=1, sticky='nsew')
-
-on_off_frame.grid(row=2, column=1, padx=16, pady=16, sticky='nsew')
-on_button.grid(row=0, column=0, sticky='nsew')
-off_button.grid(row=0, column=1, sticky='nsew')
-
-token_change_frame.grid(row=1, column=0, padx=16, pady=16, sticky='nsew')
-change_token_label.grid(row=0, column=0, sticky='nsew')
-token_input.grid(row=1, column=0, sticky='nsew')
-
-change_note_frame.grid(row=2, column=0, padx=16, pady=16, sticky='nsew')
-changes_label.grid(row=0, column=0, sticky='w')
-
 def turn_on(event):
     print("On button pressed!")
     grab_user_data(token_input.get(), frequency_input.get(), offset_amount.get(), offset_sign.curselection(), alert_uri.get())
@@ -173,25 +146,23 @@ def watch(token, frequency, utc_offset, utc_sign, alert_uri):
 def fill_fields():
     """Takes data (if present) from user_data.json and fills it into view fields on app open
     
-    Arguments:
-        token {string} -- api key for user
-        frequency {int} -- frequency of alerts/checks
-        utc_offset {string} -- utc offset amount in HH:MM format
-        utc_sign {char} -- sign of utc offset (+ or -)
-        alert_uri {string} -- path to audio file to play alert
+    If there is no data present, the fields will be empty
     """
     with open("./bugme/user_data.json", "r") as data_file:
-        data = json.load(data_file)
-        token_input.insert(0, data["user_info[\"token\"]"])
-        frequency_input.insert(0, data["user_info[\"frequency\"]"])
-        offset_amount.insert(0, data["user_info[\"offset_amount\"]"])
-        
-        if(data["user_info[\"offset_sign\"]"] == '-'):
-            offset_sign.activate(0)
-        else:
-            offset_sign.activate(1)
+        try:
+            data = json.load(data_file)
+            token_input.insert(0, data['user_info'][0]['token'])
+            frequency_input.insert(0, data['user_info'][0]['frequency'])
+            offset_amount.insert(0, data['user_info'][0]['utc_offset'])
+            
+            if(data['user_info'][0]['utc_sign'] == '-'):
+                offset_sign.activate(0)
+            else:
+                offset_sign.activate(1)
 
-        alert_uri.insert(0, data["user_info[\"alert_uri\"]"])
+            alert_uri.insert(0, data['user_info'][0]['alert_uri'])
+        except:
+            pass
 
 
 
@@ -228,8 +199,8 @@ def start():
 
 
 if __name__ == "__main__":
-    window.mainloop()
     start()
+
 
 # while True:
 #     watch("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "1", "05:00", "-", "./bugme/alert.mp3") # <- test method of watch()
