@@ -30,7 +30,6 @@ def convert_month(month):
         'Oct': '10',
         'Nov': '11',
         'Dec': '12',
-        '': 'xx'    # A default that shouldn't be reached
     }[month]
 
 
