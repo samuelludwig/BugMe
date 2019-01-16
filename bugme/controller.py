@@ -7,6 +7,7 @@ import json
 import tkinter
 from bugme import getDueDates, overdueAlert
 from datetime import datetime, timedelta
+import threading
 
 
 #################################################################################################
@@ -95,24 +96,54 @@ change_token_label = tkinter.Label(token_change_frame, text="Change user token:"
 # [TextEntry] User Token
 token_input = tkinter.Entry(token_change_frame, width=48, show="*")
 
+class WatchThread(threading.Thread):
+    """Thread where watch will be called until it is killed
+    
+    Will watch for stop() flag on interval to quit
+    """
+
+    def __init__(self):
+        super(WatchThread, self).__init__()
+        self._stop_event = threading.Event()
+
+    def stop(self):
+        self._stop_event.set()
+
+    def stopped(self):
+        return self._stop_event.set()
+
+    def watch(self, token, frequency, utc_offset, utc_sign, alert_uri):
+        """Where it all happens, calls all relevant functions to check and respond to due status
+
+        Goes through the process of getting and converting the due dates of each task,
+        then testing them to see if they are past due. If they are past due trigger() will call
+        the play_alert() function. Runs as long as app is up, will update and check
+        tasks every x minutes.
+        """
+        last_time = 0
+        
+        while not self.stopped():
+            if int(datetime.now()) > last_time+(int(frequency) * 60):
+                last_time = datetime.now()
+                getDueDates.get_due_dates(token)
+                getDueDates.convert_dates()
+                trigger(utc_offset, utc_sign, alert_uri)
+            
+
+watch_me = WatchThread()
+
 def turn_on(event):
-    print("On button pressed!")
+    print("On button pressed!") # DEBUG PRINT: REMOVE THIS LATER #
     grab_user_data(token_input.get(), frequency_input.get(), offset_amount.get(), offset_sign.curselection(), alert_uri.get())
+    watch_me.watch(token_input.get(), frequency_input.get(), offset_amount.get(), offset_sign.curselection(), alert_uri.get())
 
 
 def turn_off(event):
-    pass
+    print("Off button pressed!") # DEBUG PRINT: REMOVE THIS LATER #
+    watch_me.stop()
 
 on_button.bind('<Button-1>', turn_on)
 off_button.bind('<Button-1>', turn_off)
-
-class Controller:
-    def __init__(self, token, frequency, utc_offset, utc_sign, alert_uri):
-        self.token = token
-        self.frequency = frequency
-        self.utc_offset = utc_offset
-        self.utc_sign = utc_sign
-        self.alert_uri = alert_uri
 
 def trigger(utc_offset, utc_sign, alert_uri):
         """Goes through list of converted dates and compares them to current time to see if they have passed.
@@ -129,20 +160,7 @@ def trigger(utc_offset, utc_sign, alert_uri):
                     if str(datetime.now()-timedelta(hours=int(utc_offset[0:2]), minutes=int(utc_offset[3:5]))) > (date):
                         overdueAlert.play_alert(alert_uri)
                         break
-
-def watch(token, frequency, utc_offset, utc_sign, alert_uri):
-    """Where it all happens, calls all relevant functions to check and respond to due status
-
-    Goes through the process of getting and converting the due dates of each task,
-    then testing them to see if they are past due. If they are past due trigger() will call
-    the play_alert() function. Runs as long as app is up, will update and check
-    tasks every x minutes.
-    """
-    getDueDates.get_due_dates(token)
-    getDueDates.convert_dates()
-    trigger(utc_offset, utc_sign, alert_uri)
-    sleep(int(frequency) * 60) # Sleep for (frequency) minutes
-
+            
 def fill_fields():
     """Takes data (if present) from user_data.json and fills it into view fields on app open
     
