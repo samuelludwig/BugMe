@@ -120,10 +120,10 @@ class WatchThread(threading.Thread):
         the play_alert() function. Runs as long as app is up, will update and check
         tasks every x minutes.
         """
-        last_time = 0
+        last_time = (datetime.now() - timedelta(minutes=int(frequency)))
         
         while not self.stopped():
-            if int(datetime.now()) > last_time+(int(frequency) * 60):
+            if datetime.now() > last_time+timedelta(minutes=int(frequency)):
                 last_time = datetime.now()
                 getDueDates.get_due_dates(token)
                 getDueDates.convert_dates()
@@ -132,10 +132,21 @@ class WatchThread(threading.Thread):
 
 watch_me = WatchThread()
 
+def call_watch_me():
+    with open("./bugme/user_data.json") as data_file:
+        data = json.load(data_file)
+        watch_me.watch(
+            data['user_info'][0]['token'],
+            data['user_info'][0]['frequency'], 
+            data['user_info'][0]['utc_offset'], 
+            data['user_info'][0]['utc_sign'], 
+            data['user_info'][0]['alert_uri'])
+
+
 def turn_on(event):
     print("On button pressed!") # DEBUG PRINT: REMOVE THIS LATER #
     grab_user_data(token_input.get(), frequency_input.get(), offset_amount.get(), offset_sign.curselection(), alert_uri.get())
-    watch_me.watch(token_input.get(), frequency_input.get(), offset_amount.get(), offset_sign.curselection(), alert_uri.get())
+    call_watch_me()
 
 
 def turn_off(event):
@@ -152,11 +163,11 @@ def trigger(utc_offset, utc_sign, alert_uri):
         """
         with open('./bugme/converted_dates.txt') as date_file:
             for date in date_file:
-                if utc_sign == '-': 
+                if utc_sign == [1]: 
                     if str(datetime.now()+timedelta(hours=int(utc_offset[0:2]), minutes=int(utc_offset[3:5]))) > (date):
                         overdueAlert.play_alert(alert_uri)
                         break
-                elif utc_sign == '+':
+                elif utc_sign == [0]:
                     if str(datetime.now()-timedelta(hours=int(utc_offset[0:2]), minutes=int(utc_offset[3:5]))) > (date):
                         overdueAlert.play_alert(alert_uri)
                         break
@@ -213,13 +224,12 @@ def start():
     (if there is anything in that file)
     """
     fill_fields()
-    pass
 
 
 if __name__ == "__main__":
     start()
 
-
+#call_watch_me()
 # while True:
 #     watch("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "1", "05:00", "-", "./bugme/alert.mp3") # <- test method of watch()
 

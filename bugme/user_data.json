@@ -1,1 +1,1 @@
-{"user_info": [{"token": "0d9672d88734f4360a18840e3b34f742ee2f0bff", "frequency": "2", "utc_offset": "05:00", "utc_sign": [], "alert_uri": "./bugme/alert.mp3"}]}
+{"user_info": [{"token": "0d9672d88734f4360a18840e3b34f742ee2f0bff", "frequency": "4", "utc_offset": "05:00", "utc_sign": [1], "alert_uri": "./bugme/alert.mp3"}]}
