@@ -4,10 +4,10 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from time import sleep
 
 import json
+import multiprocessing
 import tkinter
 from bugme import getDueDates, overdueAlert
 from datetime import datetime, timedelta
-import threading
 
 
 #################################################################################################
@@ -96,21 +96,26 @@ change_token_label = tkinter.Label(token_change_frame, text="Change user token:"
 # [TextEntry] User Token
 token_input = tkinter.Entry(token_change_frame, width=48, show="*")
 
-class WatchThread(threading.Thread):
-    """Thread where watch will be called until it is killed
+class WatchProcess(multiprocessing.Process):
+    """Process where watch will be called until it is killed
     
     Will watch for stop() flag on interval to quit
     """
 
     def __init__(self):
-        super(WatchThread, self).__init__()
-        self._stop_event = threading.Event()
+        super(WatchProcess, self).__init__()
+        self._stop_event = multiprocessing.Event()
 
     def stop(self):
-        self._stop_event.set()
+        self.terminate()
 
     def stopped(self):
-        return self._stop_event.set()
+        return self.terminate()
+
+    # def join(self, timeout=None):
+    #     """ Stop the thread. """
+    #     self._stop_event.set(  )
+    #     threading.Thread.join(self, timeout)
 
     def watch(self, token, frequency, utc_offset, utc_sign, alert_uri):
         """Where it all happens, calls all relevant functions to check and respond to due status
@@ -128,9 +133,7 @@ class WatchThread(threading.Thread):
                 getDueDates.get_due_dates(token)
                 getDueDates.convert_dates()
                 trigger(utc_offset, utc_sign, alert_uri)
-            
-
-watch_me = WatchThread()
+                self.stop()
 
 def call_watch_me():
     with open("./bugme/user_data.json") as data_file:
@@ -151,7 +154,7 @@ def turn_on(event):
 
 def turn_off(event):
     print("Off button pressed!") # DEBUG PRINT: REMOVE THIS LATER #
-    watch_me.stop()
+    watch_me.terminate()
 
 on_button.bind('<Button-1>', turn_on)
 off_button.bind('<Button-1>', turn_off)
@@ -184,7 +187,7 @@ def fill_fields():
             frequency_input.insert(0, data['user_info'][0]['frequency'])
             offset_amount.insert(0, data['user_info'][0]['utc_offset'])
             
-            if(data['user_info'][0]['utc_sign'] == '-'):
+            if(data['user_info'][0]['utc_sign'] == [1]):
                 offset_sign.activate(0)
             else:
                 offset_sign.activate(1)
@@ -227,9 +230,13 @@ def start():
 
 
 if __name__ == "__main__":
+    multiprocessing.freeze_support()
+    multiprocessing.set_start_method('spawn')
+    watch_me = WatchProcess()
+    watch_me.start()
     start()
 
-#call_watch_me()
+# call_watch_me()
 # while True:
 #     watch("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "1", "05:00", "-", "./bugme/alert.mp3") # <- test method of watch()
 
