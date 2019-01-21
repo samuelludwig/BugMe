@@ -1,5 +1,9 @@
-from pygame import mixer
+import traceback
+from sys import exc_info
 from time import sleep
+
+from pygame import mixer
+
 
 def play_alert(sound_file):
     """To be triggered by watch when overdue task encountered
@@ -14,4 +18,4 @@ def play_alert(sound_file):
         sleep(10)
         mixer.music.stop()
     except:
-        print("Error: Improper File Format")
+        print(exc_info())
