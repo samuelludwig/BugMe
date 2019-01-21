@@ -96,68 +96,31 @@ change_token_label = tkinter.Label(token_change_frame, text="Change user token:"
 # [TextEntry] User Token
 token_input = tkinter.Entry(token_change_frame, width=48, show="*")
 
-class WatchProcess(multiprocessing.Process):
-    """Process where watch will be called until it is killed
-    
-    Will watch for stop() flag on interval to quit
-    """
+utc_frame.grid(row=0, column=0, padx=16, pady=16, sticky='nsew')
+offset_label.grid(row=0, column=0, columnspan=2, sticky='nsew')
+offset_sign.grid(row=1, column=0, sticky='nsew')
+offset_amount.grid(row=1, column=1, sticky='nsew')
 
-    def __init__(self):
-        super(WatchProcess, self).__init__()
-        self._stop_event = multiprocessing.Event()
+frequency_frame.grid(row=0, column=2, padx=16, pady=16, sticky='e')
+frequency_label_1.grid(row=0, column=0, sticky='nsew')
+frequency_input.grid(row=1, column=0, sticky='nsew')
+frequency_label_2.grid(row=1, column=1, sticky='nsew')
 
-    def stop(self):
-        self.terminate()
+change_alert_frame.grid(row=1, column=2, padx=16, pady=16, sticky='nsew')
+change_alert_label.grid(row=0, column=0, columnspan=2, sticky='nsew')
+alert_uri.grid(row=1, column=0, sticky='nsew')
+alert_browse.grid(row=1, column=1, sticky='nsew')
 
-    def stopped(self):
-        return self.terminate()
+on_off_frame.grid(row=2, column=1, padx=16, pady=16, sticky='nsew')
+on_button.grid(row=0, column=0, sticky='nsew')
+off_button.grid(row=0, column=1, sticky='nsew')
 
-    # def join(self, timeout=None):
-    #     """ Stop the thread. """
-    #     self._stop_event.set(  )
-    #     threading.Thread.join(self, timeout)
+token_change_frame.grid(row=1, column=0, padx=16, pady=16, sticky='nsew')
+change_token_label.grid(row=0, column=0, sticky='nsew')
+token_input.grid(row=1, column=0, sticky='nsew')
 
-    def watch(self, token, frequency, utc_offset, utc_sign, alert_uri):
-        """Where it all happens, calls all relevant functions to check and respond to due status
-
-        Goes through the process of getting and converting the due dates of each task,
-        then testing them to see if they are past due. If they are past due trigger() will call
-        the play_alert() function. Runs as long as app is up, will update and check
-        tasks every x minutes.
-        """
-        last_time = (datetime.now() - timedelta(minutes=int(frequency)))
-        
-        while not self.stopped():
-            if datetime.now() > last_time+timedelta(minutes=int(frequency)):
-                last_time = datetime.now()
-                getDueDates.get_due_dates(token)
-                getDueDates.convert_dates()
-                trigger(utc_offset, utc_sign, alert_uri)
-                self.stop()
-
-def call_watch_me():
-    with open("./bugme/user_data.json") as data_file:
-        data = json.load(data_file)
-        watch_me.watch(
-            data['user_info'][0]['token'],
-            data['user_info'][0]['frequency'], 
-            data['user_info'][0]['utc_offset'], 
-            data['user_info'][0]['utc_sign'], 
-            data['user_info'][0]['alert_uri'])
-
-
-def turn_on(event):
-    print("On button pressed!") # DEBUG PRINT: REMOVE THIS LATER #
-    grab_user_data(token_input.get(), frequency_input.get(), offset_amount.get(), offset_sign.curselection(), alert_uri.get())
-    call_watch_me()
-
-
-def turn_off(event):
-    print("Off button pressed!") # DEBUG PRINT: REMOVE THIS LATER #
-    watch_me.terminate()
-
-on_button.bind('<Button-1>', turn_on)
-off_button.bind('<Button-1>', turn_off)
+change_note_frame.grid(row=2, column=0, padx=16, pady=16, sticky='nsew')
+changes_label.grid(row=0, column=0, sticky='w')
 
 def trigger(utc_offset, utc_sign, alert_uri):
         """Goes through list of converted dates and compares them to current time to see if they have passed.
@@ -221,20 +184,49 @@ def grab_user_data(token, frequency, utc_offset, utc_sign, alert_uri):
     with open("./bugme/user_data.json", "w") as data_file:
         json.dump(data, data_file)
 
-def start():
-    """Called when application is started, fills all text fields with whats in user_data.json 
-    
-    (if there is anything in that file)
-    """
-    fill_fields()
+def watch(token, frequency, utc_offset, utc_sign, alert_uri):
+        """Where it all happens, calls all relevant functions to check and respond to due status
 
+        Goes through the process of getting and converting the due dates of each task,
+        then testing them to see if they are past due. If they are past due trigger() will call
+        the play_alert() function. Runs as long as app is up, will update and check
+        tasks every x minutes.
+        """
+        last_time = (datetime.now() - timedelta(minutes=int(frequency)))
+        
+        while True:
+            if datetime.now() > last_time+timedelta(minutes=int(frequency)):
+                last_time = datetime.now()
+                getDueDates.get_due_dates(token)
+                getDueDates.convert_dates()
+                trigger(utc_offset, utc_sign, alert_uri)
 
 if __name__ == "__main__":
-    multiprocessing.freeze_support()
+    fill_fields()
     multiprocessing.set_start_method('spawn')
-    watch_me = WatchProcess()
-    watch_me.start()
-    start()
+    with open("./bugme/user_data.json") as data_file:
+        data = json.load(data_file)
+        watch_process = multiprocessing.Process(target=watch, args=(
+            data['user_info'][0]['token'],
+            data['user_info'][0]['frequency'], 
+            data['user_info'][0]['utc_offset'], 
+            data['user_info'][0]['utc_sign'], 
+            data['user_info'][0]['alert_uri']))
+    
+    def turn_on(event):
+        print("On button pressed!") # DEBUG PRINT: REMOVE THIS LATER #
+        grab_user_data(token_input.get(), frequency_input.get(), offset_amount.get(), offset_sign.curselection(), alert_uri.get())
+        watch_process.start()
+
+    def turn_off(event):
+        print("Off button pressed!") # DEBUG PRINT: REMOVE THIS LATER #
+        watch_process.terminate()
+        watch_process.join()
+
+    on_button.bind('<Button-1>', turn_on)
+    off_button.bind('<Button-1>', turn_off)
+
+    window.mainloop()
 
 # call_watch_me()
 # while True:

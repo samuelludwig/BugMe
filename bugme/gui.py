@@ -32,8 +32,9 @@ controller.token_input.grid(row=1, column=0, sticky='nsew')
 controller.change_note_frame.grid(row=2, column=0, padx=16, pady=16, sticky='nsew')
 controller.changes_label.grid(row=0, column=0, sticky='w')
 
-controller.start()
-controller.window.mainloop()
+# controller.start()
+# controller.window.mainloop()
+
 #---------------------LAYOUT---------------------#
 # [Title] Window Title
 #
