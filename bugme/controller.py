@@ -192,7 +192,6 @@ def watch(token, frequency, utc_offset, utc_sign, alert_uri):
         the play_alert() function. Runs as long as app is up, will update and check
         tasks every x minutes.
         """
-        print(os.getcwd())
         last_time = (datetime.now() - timedelta(minutes=int(frequency)))
         
         while True:
@@ -203,7 +202,6 @@ def watch(token, frequency, utc_offset, utc_sign, alert_uri):
                 trigger(utc_offset, utc_sign, alert_uri)
 
 if __name__ == "__main__":
-    print(os.getcwd())
     fill_fields()
     multiprocessing.set_start_method('spawn')
     with open("./bugme/user_data.json") as data_file:
