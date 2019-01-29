@@ -1,8 +1,11 @@
-import sys
 import os
+import sys
+import tkinter
+
+from bugme.controller import Controller
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
-import tkinter
 
 class View:
     def __init__(self, root):
@@ -54,15 +57,5 @@ class View:
         self.change_note_frame.grid(row=2, column=0, padx=16, pady=16, sticky='nsew')
         self.changes_label.grid(row=0, column=0, sticky='w')
 
-        root.on_button.bind('<Button-1>', self.turn_on)
-        root.off_button.bind('<Button-1>', self.turn_off)
-
-    def turn_on(self, event):
-        print("On button pressed!") # DEBUG PRINT: REMOVE THIS LATER #
-        # grab_user_data(token_input.get(), frequency_input.get(), offset_amount.get(), offset_sign.curselection(), alert_uri.get())
-        # watch_process.start()
-
-    def turn_off(self, event):
-        print("Off button pressed!") # DEBUG PRINT: REMOVE THIS LATER #
-        # watch_process.terminate()
-        # watch_process.join()
+        self.on_button.bind('<Button-1>', Controller.turn_on)
+        self.off_button.bind('<Button-1>', Controller.turn_off)
